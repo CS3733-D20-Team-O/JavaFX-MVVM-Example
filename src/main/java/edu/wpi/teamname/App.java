@@ -11,14 +11,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class App extends Application {
 
+  ViewModel viewModel;
+
   @Override
   public void init() {
     log.info("Starting Up");
+    Model.getInstance().register();
   }
 
   @Override
   public void start(Stage primaryStage) throws IOException {
-    final Parent root = FXMLLoader.load(getClass().getResource("views/LoanCalc.fxml"));
+    final FXMLLoader loader = new FXMLLoader(getClass().getResource("views/LoanCalc.fxml"));
+    final Parent root = loader.load();
+    viewModel = loader.getController();
     primaryStage.setScene(new Scene(root));
     primaryStage.show();
   }
@@ -26,5 +31,7 @@ public class App extends Application {
   @Override
   public void stop() {
     log.info("Shutting Down");
+    Model.getInstance().unregister(); // Note the unregister call here
+    viewModel.unregister(); // and here
   }
 }
